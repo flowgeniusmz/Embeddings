@@ -6,8 +6,10 @@ audio-recorder-streamlit
 bs4
 cloudscraper
 colorama
+docx
 extra-streamlit-components
 faiss-cpu
+fitz
 gtts
 html2text
 hydralit
@@ -33,6 +35,7 @@ pubmed
 pyautogen
 pydub
 pygwalker
+pyshark
 python-dateutil
 python-pptx
 requests
