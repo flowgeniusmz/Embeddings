@@ -1,5 +1,5 @@
 
-# Dean's Assistant Web App README
+# Dean's Assistant
 ## Overview
 Dean's Assistant is a web-based application designed to provide real-time, AI-powered assistance for educational administrators, specifically focusing on handling inquiries related to student discipline, attendance, and other administrative tasks. Built with Streamlit, this app integrates OpenAI's GPT model to understand and respond to user queries effectively.
 
