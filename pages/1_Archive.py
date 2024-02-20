@@ -7,7 +7,6 @@ import time
 import streamlit as st
 from config import pagesetup as ps
 
-
 # 0. Set Page Config
 app_title = "Dean's Assistant"
 app_icon = "🎓"
@@ -16,26 +15,18 @@ app_layout = "wide"
 page_title = "Dean's Assistant"
 page_subtitle = "John F Kennedy Middle School"
 
-st.set_page_config(page_title=app_title, page_icon=app_icon, initial_sidebar_state=app_sidebar, layout=app_layout)
+#st.set_page_config(page_title=app_title, page_icon=app_icon, initial_sidebar_state=app_sidebar, layout=app_layout)
 
 
 # 1. Set Session State (Initialize session state for storing questions and responses if not already done)
-if 'messages' not in st.session_state:
-    st.session_state.messages = []
-
-if "initial_messages" not in st.session_state:
-    st.session_state.initial_messages = [
-        {"role": "assistant", "content": "I am your Dean's assistant! How can I help you?"}
-    ]
+if 'q_and_a' not in st.session_state:
+    st.session_state.q_and_a = []
 
 # 2. Set Page Title
 #ps.set_title(page_title, page_subtitle)
 
 # 3. Set Variables
 client = OpenAI(api_key=st.secrets.openai.api_key)
-assistantid = st.secrets.openai.assistant_id
-thread = client.beta.threads.create()
-threadid = thread.id
     
 #Streamlit App Title
 title_container = st.container()
@@ -50,46 +41,6 @@ with title_container:
 overview_container = st.container()
 with overview_container:
     ps.set_page_overview(varHeader="Overview", varText="The **Dean's Assistant** presented by FlowGenius is an AI assistant that has been trained on everything about your school.")
-
-
-#MAIN FUNCTIONALITY
-
-chat_container = st.container()
-with chat_container:
-    for message in st.session_state.messages:
-        role = message['role']
-        content = message['content']
-        with st.chat_message(role):
-            st.markdown(content)
-
-
-if prompt:=st.chat_input("Enter your question here!"):
-    new_message = client.beta.threads.messages.create(
-        thread_id=threadid,
-        content=prompt
-    )
-
-    run = client.beta.threads.runs.create(
-        assistant_id=assistantid,
-        thread_id=threadid
-    )
-
-    while run.status=="in_progress" or run.status=="queued":
-        time.sleep(1)
-        run = client.beta.threads.runs.retrieve(
-            run_id=run.id,
-            thread_id=threadid
-        )
-
-        if run.status == 'completed':
-            message_list = client.beta.threads.messages.list(
-                thread_id=threadid, 
-                order='desc'
-            )
-
-            message_list_data = message_list.data
-            
-
 
 
 #Streamlit user input for the prompt
