@@ -102,13 +102,13 @@ if col2.button('Clear Chat'):
 
 
 # Add a spacer
-st.write("")  # Adjust the number of these based on needed spacing
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-
+# st.write("")  # Adjust the number of these based on needed spacing
+# st.write("")
+# st.write("")
+# st.write("")
+# st.write("")
+# st.write("")
+add_vertical_space(5)
 
 
 # Display recent questions and (optionally) responses
