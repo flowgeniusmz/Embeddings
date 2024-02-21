@@ -1,6 +1,5 @@
 # 0. Import Libraries
 import streamlit as st
-from config import pagesetup as ps
 from langchain.llms import OpenAI
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
