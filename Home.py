@@ -28,12 +28,15 @@ if "initial_messages" not in st.session_state:
         {"role": "assistant", "content": "I am your Dean's assistant! How can I help you?"}
     ]
 
+if "q_and_a" not in st.session_state:
+    st.session_state.q_and_a = []
+
 # 2. Set Page Title
 #ps.set_title(page_title, page_subtitle)
 
 # 3. Set Variables
 client = OpenAI(api_key=st.secrets.openai.api_key)
-assistantid = st.secrets.openai.assistant_id
+assistantid = st.secrets.openai.assistant_key_3
 thread = client.beta.threads.create()
 threadid = thread.id
     
@@ -66,7 +69,8 @@ with chat_container:
 if prompt:=st.chat_input("Enter your question here!"):
     new_message = client.beta.threads.messages.create(
         thread_id=threadid,
-        content=prompt
+        content=prompt,
+        role="user"
     )
 
     run = client.beta.threads.runs.create(
@@ -87,7 +91,8 @@ if prompt:=st.chat_input("Enter your question here!"):
                 order='desc'
             )
 
-            message_list_data = message_list.data
+            st.markdown(message_list)
+            print(message_list)
             
 
 
