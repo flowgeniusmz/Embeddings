@@ -68,5 +68,6 @@ if prompt := st.chat_input("Enter a question (ex:  A student just had his third 
             for msgs in st.session_state.messages:
                 role = msgs.role
                 content = msgs.content
-                with st.chat_message(role):
-                    st.markdown(content)
+                if role == "assistant" or role == "user":
+                    with st.chat_message(role):
+                        st.markdown(content)
