@@ -6,6 +6,7 @@ from openai import OpenAI
 import time
 import streamlit as st
 from config import pagesetup as ps
+from app import chat
 
 
 # 0. Set Page Config
@@ -53,135 +54,10 @@ with title_container:
 overview_container = st.container()
 with overview_container:
     ps.set_page_overview(varHeader="Overview", varText="The **Dean's Assistant** presented by FlowGenius is an AI assistant that has been trained on everything about your school.")
-
-
+st.divider()
+chat.app_chat()
 #MAIN FUNCTIONALITY
-
-chat_container = st.container()
-with chat_container:
-    for message in st.session_state.messages:
-        role = message['role']
-        content = message['content']
-        with st.chat_message(role):
-            st.markdown(content)
-
-
-if prompt:=st.chat_input("Enter your question here!"):
-    new_message = client.beta.threads.messages.create(
-        thread_id=threadid,
-        content=prompt,
-        role="user"
-    )
-
-    run = client.beta.threads.runs.create(
-        assistant_id=assistantid,
-        thread_id=threadid
-    )
-
-    while run.status=="in_progress" or run.status=="queued":
-        time.sleep(1)
-        run = client.beta.threads.runs.retrieve(
-            run_id=run.id,
-            thread_id=threadid
-        )
-
-        if run.status == 'completed':
-            message_list = client.beta.threads.messages.list(
-                thread_id=threadid, 
-                order='desc'
-            )
-
-            st.markdown(message_list)
-            print(message_list)
-            
-
-
-
-#Streamlit user input for the prompt
-user_prompt = st.text_area("Enter your question:", "Example: A student just had his third tardy. What consequences should I consider?")
-
-col1, col2 = st.columns(2)
-
-#Button to submit question
-if col1.button('Submit'):
-    with st.spinner('Fetching response...'):
-        #Retrieve existing assistant
-        my_assistant = client.beta.assistants.retrieve("asst_VS8FnRtUoE2P5YvZHQ7h8LzJ")
-        #st.write("Assistant Retrieved:", my_assistant)
-
-        #create thread and messages
-        thread = client.beta.threads.create(
-            messages=[
-                {
-                    "role": "user",
-                    "content": user_prompt
-                }
-            ]
-        )
-
-        run = client.beta.threads.runs.create(
-            thread_id=thread.id,
-            assistant_id=my_assistant.id
-        )
-        
-        while run.status != 'completed':
-            run = client.beta.threads.runs.retrieve(
-                thread_id=thread.id,
-                run_id=run.id
-            )
-            time.sleep(1)
-
-            if run.status == 'completed':
-                thread_messages = client.beta.threads.messages.list(thread.id)
-                for message in thread_messages.data:
-                    if message.role == 'assistant':
-                        for content_part in message.content:
-                            message_text = content_part.text.value
-                            # For each response, add it to the session state with show_response set to True
-                            st.session_state['q_and_a'].append({
-                                "question": user_prompt,
-                                "response": message_text,  # Assume this is fetched as before
-                                "show_response": True
-                            })
-                
-                            st.markdown(f"**Assistant's Response:** {message_text}")
-    
-# Button to clear responses (not the questions)
-if col2.button('Clear Chat'):
-    # Iterate through each Q&A pair and set show_response to False
-    for qa in st.session_state['q_and_a']:
-        qa['show_response'] = False
-    st.experimental_rerun()
-
-
-
-# Add a spacer
-st.write("")  # Adjust the number of these based on needed spacing
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-
-
-
-# Display recent questions and (optionally) responses
-st.write("## Recent Questions and Responses")
-for qa in st.session_state['q_and_a']:
-    expander_label = f"Q&A: {qa['question'][:50]}..." if len(qa['question']) > 50 else qa['question']
-    with st.expander(expander_label):
-        st.write(f"**Question:** {qa['question']}")
-        if qa['show_response']:
-            st.write(f"**Response:** {qa['response']}")
-
-
-# Add a spacer
-st.write("")  # Adjust the number of these based on needed spacing
-st.write("")
-st.write("")
-st.write("")
-st.write("")
-st.write("")
+st.divider()
 
 
 # Add a Streamlit footer
